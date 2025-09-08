@@ -1,51 +1,32 @@
-# agents/player_analyst_agent.py
-# Defines the agent responsible for in-depth player research and lineup recommendations.
+# general_manager/player_analyst_agent.py
+# This agent orchestrates the sequential workflow for detailed player analysis.
 
-from google.adk.agents import LlmAgent
-from google.adk.tools.agent_tool import AgentTool
-from tools import scout_agent
-# --- START OF CHANGE ---
-# Replaced the deprecated schedule_agent with the new data_gathering_agent
-from general_manager import scouting_assistant_agent
-from general_manager.analyst_steps import data_gathering_agent
-# --- END OF CHANGE ---
+from google.adk.agents import SequentialAgent
 
-def create_agent():
-    """Factory function to create the Player Analyst agent."""
-    
-    scout = scouting_assistant_agent.create_agent()
-    scout_tool = AgentTool(agent=scout)
-    
-    # --- START OF CHANGE ---
-    # The new data_gathering_agent is used as a tool to fetch the schedule.
-    gatherer = data_gathering_agent.create_agent()
-    gatherer_tool = AgentTool(agent=gatherer, name="data_gathering_agent")
-    # --- END OF CHANGE ---
+# Import the static agent instances that will serve as steps in the sequence.
+# These are absolute imports, consistent with the project's structure.
+from general_manager.analyst_steps.data_gathering_agent import data_gathering_agent
+from general_manager.analyst_steps.player_research_agent import player_research_agent
+from general_manager.analyst_steps.report_synthesizer_agent import report_synthesizer_agent
 
-    return LlmAgent(
-        name="player_analyst",
-        model="gemini-2.5-pro",
-        description="Performs deep-dive research on players by analyzing historical performance and delegating news gathering to a scouting assistant tool.",
-        # **CHANGE**: Instructions updated to use the new data_gathering_agent.
-        instruction="""
-        You are an expert fantasy football analyst. Your goal is to provide a detailed, accurate report grounded in verified, real-time information.
+# Define the Player Analyst as a SequentialAgent.
+# This is the best practice for ensuring a multi-step process runs in a specific,
+# guaranteed order every time. It will execute the sub-agents sequentially.
+player_analyst_agent = SequentialAgent(
+    name="player_analyst",
+    description=(
+        "A sequential agent that performs a deep-dive analysis. "
+        "It first gathers the NFL schedule, then researches each player on the roster, "
+        "and finally synthesizes a comprehensive report."
+    ),
+    # The agents will run in this exact order:
+    # 1. data_gathering_agent
+    # 2. player_research_agent
+    # 3. report_synthesizer_agent
+    sub_agents=[
+        data_gathering_agent,
+        player_research_agent,
+        report_synthesizer_agent,
+    ],
+)
 
-        **Your MANDATORY Process:**
-        1.  You will receive a task from your superior that includes the specific `season_year` and `week_number` to analyze, along with the user's `user_id` and `league_id`.
-        2.  **Get Schedule:** You MUST use the `data_gathering_agent` tool to get the official NFL schedule for the season and week you were given.
-        3.  **VERIFY SCHEDULE:** After receiving the schedule, you MUST perform a verification step. Use your `scouting_assistant` tool to search for one or two of the games from the list you received (e.g., "Cowboys vs Browns week 1 2025") to confirm the schedule data is accurate. Do not proceed if the schedule is incorrect.
-        4.  **Get Roster:** Once the schedule is verified, use the `get_my_roster` tool with the correct user and league IDs.
-        5.  **Research Players:** For each key player on the roster, perform research using their verified matchup.
-            a. Use your `scouting_assistant` tool to find the latest news and injury updates from at least two reputable sources.
-            b. Use `get_player_historical_stats` for past season performance.
-        6.  Synthesize all verified information into a comprehensive report for the Offensive Coordinator, including a list of your sources.
-        """,
-        tools=[
-            # --- START OF CHANGE ---
-            gatherer_tool,
-            # --- END OF CHANGE ---
-            scout_tool,
-            scout_agent.get_my_roster,
-            scout_agent.get_player_historical_stats,
-        ],
-    )
