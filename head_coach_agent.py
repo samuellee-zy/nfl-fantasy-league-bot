@@ -1,8 +1,9 @@
 # agents/head_coach_agent.py
 # Defines the parent agent (Head Coach) that coordinates the specialist agents.
 
+from ADK.nfl_fantasy_league.offensive_coordinator import offensive_coordinator_agent
 from google.adk.agents import LlmAgent  # <-- CORRECTED: Using LlmAgent is the proper way
-from general_manager import offensive_coordinator_agent, general_manager_agent
+from general_manager import general_manager_agent
 
 def create_agent(user_context: dict):
     """
