@@ -4,13 +4,15 @@
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
 from tools import scout_agent
-from general_manager import scouting_assistant_agent
+from general_manager import scouting_assistant_agent, player_analyst_agent
 
 def create_agent():
     """Factory function to create the General Manager agent."""
 
     scout = scouting_assistant_agent.create_agent()
+    analyst = player_analyst_agent.create_agent()
     scout_tool = AgentTool(agent=scout, skip_summarization=False)
+    analyst_tool = AgentTool(agent=analyst, skip_summarization=False)
 
     return LlmAgent(
         # --- START OF CHANGE ---
@@ -34,6 +36,7 @@ def create_agent():
         """,
         tools=[
             scout_tool,
+            analyst_tool,
             scout_agent.get_waiver_wire_players,
             scout_agent.get_my_roster,
             scout_agent.get_user_id,
