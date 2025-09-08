@@ -1,0 +1,25 @@
+# .gByte-compiled / optimized / DLL files
+pycache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment folders
+# Use a pattern that matches 'venv', 'env', '.venv', etc.
+/venv/
+/.venv/
+/env/
+/virtual/
+/venv*
+
+# Test files
+# Ignores files like 'test_app.py' and 'user_test.py'
+test*.py
+*_test.py
+
+# Environment variables
+# Don't commit secrets and credentials
+.env
+.env.*
+!.env.example
