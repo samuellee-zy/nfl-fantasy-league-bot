@@ -4,12 +4,9 @@
 
 from google.adk.agents import LlmAgent
 
-# # Import the statically defined sub-agents
-# from offensive_coordinator.offensive_coordinator_agent import offensive_coordinator_agent
-# from general_manager.general_manager_agent import general_manager_agent
-
-offensive_coordinator_agent = LlmAgent(name="Offensive_Coordinator")
-general_manager_agent = LlmAgent(name="General_Manager")
+# Import the statically defined sub-agents using relative imports
+from .offensive_coordinator.offensive_coordinator_agent import offensive_coordinator_agent
+from .general_manager.general_manager_agent import general_manager_agent
 
 # The sub_agents are instantiated in their own files and imported here.
 sub_agents = [offensive_coordinator_agent, general_manager_agent]

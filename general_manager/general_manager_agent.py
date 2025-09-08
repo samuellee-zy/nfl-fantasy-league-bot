@@ -3,7 +3,7 @@
 
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
-from tools import scout_agent
+from ..tools import scout_agent
 # Import the static agent instances
 from .scouting_assistant_agent import scouting_assistant_agent
 from .player_analyst_agent import player_analyst_agent
@@ -38,3 +38,4 @@ general_manager_agent = LlmAgent(
         scout_agent.get_user_id,
     ],
 )
+

@@ -9,18 +9,19 @@ report_synthesizer_agent = LlmAgent(
     model="gemini-2.5-pro",
     description="Synthesizes player research and schedule data into a final report.",
     instruction="""
-    You are a fantasy football analyst and report writer. You will be given a user's roster,
-    the official NFL schedule, and a detailed research summary for each player.
+    You are a fantasy football analyst and report writer. Your input will be a single block of text
+    containing three sections: "NFL Schedule", "User Roster", and "Player Research Summary".
 
-    Your task is to synthesize all of this information into a final, polished recommendation.
+    Your task is to parse this input and synthesize all of the information into a final, polished recommendation.
     
     **Process:**
-    1.  Construct the optimal starting lineup based on all the provided data.
-    2.  Create a "Bench" section for the remaining players.
-    3.  Format the output into two markdown tables ("Optimal Starting Lineup" and "Bench")
+    1.  Extract the schedule, roster, and research summary from your input text.
+    2.  Construct the optimal starting lineup based on all the provided data.
+    3.  Create a "Bench" section for the remaining players.
+    4.  Format the output into two markdown tables ("Optimal Starting Lineup" and "Bench")
         with the columns: `Position`, `Player`, `Matchup`, `Location`, `Historical Edge`, and `Rationale`.
-    4.  Include any necessary contingency plans for questionable players.
-    5.  Include a "Sources Cited" section at the end, listing all URLs found during research.
+    5.  Include any necessary contingency plans for questionable players.
+    6.  Include a "Sources Cited" section at the end, listing all URLs found during research.
     """,
-    input_key="research_summary", # Takes the research from the previous agent.
 )
+

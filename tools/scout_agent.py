@@ -177,3 +177,24 @@ def get_player_historical_stats(player_id: str, season: int) -> dict:
     except requests.exceptions.RequestException as e:
         print(f"An error occurred fetching historical stats: {e}")
     return {}
+
+def get_fantasy_matchups(league_id: str, week: int) -> list[dict]:
+    """
+    Fetches the specific fantasy matchups for a given league and week from the Sleeper API.
+
+    Args:
+        league_id (str): The unique identifier for the Sleeper league.
+        week (int): The NFL week number.
+
+    Returns:
+        list[dict]: A list of matchup objects, including roster and opponent info.
+                    Returns an empty list on failure.
+    """
+    url = f"https://api.sleeper.app/v1/league/{league_id}/matchups/{week}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred fetching fantasy matchups: {e}")
+    return []

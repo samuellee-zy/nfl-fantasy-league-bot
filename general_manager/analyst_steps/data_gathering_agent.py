@@ -2,7 +2,7 @@
 # Step 1 of the analysis workflow: Fetches the NFL schedule.
 
 from google.adk.agents import LlmAgent
-from tools import schedule_api_tool
+from ...tools import schedule_api_tool
 
 # Define the agent directly as a static instance
 data_gathering_agent = LlmAgent(
@@ -16,5 +16,5 @@ data_gathering_agent = LlmAgent(
     Return only the direct, unmodified JSON output from the tool.
     """,
     tools=[schedule_api_tool.fetch_schedule_from_api],
-    output_key="nfl_schedule" # The output will be passed to the next agent in the sequence.
 )
+

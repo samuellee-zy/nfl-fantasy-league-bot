@@ -5,9 +5,9 @@ from google.adk.agents import SequentialAgent
 
 # Import the static agent instances that will serve as steps in the sequence.
 # These are absolute imports, consistent with the project's structure.
-from general_manager.analyst_steps.data_gathering_agent import data_gathering_agent
-from general_manager.analyst_steps.player_research_agent import player_research_agent
-from general_manager.analyst_steps.report_synthesizer_agent import report_synthesizer_agent
+from .analyst_steps.data_gathering_agent import data_gathering_agent
+from .analyst_steps.player_research_agent import player_research_agent
+from .analyst_steps.report_synthesizer_agent import report_synthesizer_agent
 
 # Define the Player Analyst as a SequentialAgent.
 # This is the best practice for ensuring a multi-step process runs in a specific,
