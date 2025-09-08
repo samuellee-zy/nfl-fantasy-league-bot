@@ -20,65 +20,67 @@ The application is structured like a professional NFL coaching staff, with a roo
 
 This diagram visualizes how the agents, sub-agents, and tools are interconnected.
 ```mermaid
-graph TD  
-    subgraph "Root Agent"  
-        HC(Head\_Coach)  
+graph TD
+    subgraph "Root Agent"
+        HC("Head_Coach")
     end
 
-    subgraph "Coaching Staff (Sub-Agents)"  
-        OC(Offensive\_Coordinator)  
-        GM(General\_Manager)  
+    subgraph "Coaching Staff (Sub-Agents)"
+        OC("Offensive_Coordinator")
+        GM("General_Manager")
     end
 
-    subgraph "Specialist Assistants (Used as Tools)"  
-        PA(Player\_Analyst \<br/\> \<i\>SequentialAgent\</i\>)  
-        SA(Scouting\_Assistant)  
+    subgraph "Specialist Assistants (Used as Tools)"
+        PA("Player_Analyst <br/> <i>SequentialAgent</i>")
+        SA("Scouting_Assistant")
     end
 
-    subgraph "Analysis Workflow (Sequential Steps)"  
-        DG(1. data\_gathering\_agent) \--\> PR(2. player\_research\_agent) \--\> RS(3. report\_synthesizer\_agent)  
+    subgraph "Analysis Workflow (Sequential Steps)"
+        DG("1. data_gathering_agent") --> PR("2. player_research_agent") --> RS("3. report_synthesizer_agent")
     end
 
-    subgraph "External Tools (API Functions)"  
-        direction LR  
-        subgraph "Sleeper API"  
-            get\_roster\["get\_roster"\]  
-            get\_waiver\["get\_waiver\_wire\_players"\]  
-            get\_projections\["get\_weekly\_projections"\]  
-            get\_history\["get\_player\_historical\_stats"\]  
-            get\_matchups\["get\_fantasy\_matchups"\]  
-            get\_user\["get\_user\_id"\]  
-        end  
-        subgraph "Other APIs"  
-            get\_schedule\["fetch\_schedule\_from\_api \<br/\> (ESPN)"\]  
-            google\_search\["google\_search"\]  
-        end  
+    subgraph "External Tools (API Functions)"
+        direction LR
+        subgraph "Sleeper API"
+            get_roster("get_roster")
+            get_waiver("get_waiver_wire_players")
+            get_projections("get_weekly_projections")
+            get_history("get_player_historical_stats")
+            get_matchups("get_fantasy_matchups")
+            get_user("get_user_id")
+        end
+        subgraph "Other APIs"
+            get_schedule("fetch_schedule_from_api <br/> (ESPN)")
+            google_search("google_search")
+        end
     end
 
-    %% Agent Connections  
-    HC \--\> OC  
-    HC \--\> GM
+    %% Agent Connections
+    HC --> OC
+    HC --> GM
 
-    %% Tool Connections  
-    OC \--\> PA  
-    OC \--\> get\_roster  
-    OC \--\> get\_projections  
-    OC \--\> get\_matchups  
-    OC \--\> get\_user
+    %% Tool Connections
+    OC --> PA
+    OC --> get_roster
+    OC --> get_projections
+    OC --> get_matchups
+    OC --> get_user
 
-    GM \--\> PA  
-    GM \--\> SA  
-    GM \--\> get\_waiver  
-    GM \--\> get\_roster  
-    GM \--\> get\_user
+    GM --> PA
+    GM --> SA
+    GM --> get_waiver
+    GM --> get_roster
+    GM --> get_user
 
-    PA \--\> DG \--\> get\_schedule  
-    PA \--\> PR \--\> SA  
-    PR \--\> get\_roster  
-    PR \--\> get\_history  
-    PA \--\> RS
+    PA --> DG
+    DG --> get_schedule
+    PA --> PR
+    PR --> SA
+    PR --> get_roster
+    PR --> get_history
+    PA --> RS
 
-    SA \--\> google\_search
+    SA --> google_search
 ```
 
 ## **Installation & Setup**
