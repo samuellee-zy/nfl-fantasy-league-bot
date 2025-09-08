@@ -68,7 +68,7 @@ def get_user_id(username: str) -> str | None:
     return None
 
 
-def get_my_roster(league_id: str, user_id: str) -> list[dict]:
+def get_roster(league_id: str, user_id: str) -> list[dict]:
     """
     Fetches the user's current roster for a specific fantasy league.
 
@@ -177,47 +177,3 @@ def get_player_historical_stats(player_id: str, season: int) -> dict:
     except requests.exceptions.RequestException as e:
         print(f"An error occurred fetching historical stats: {e}")
     return {}
-
-# **CHANGE**: This brittle web scraping tool is now commented out.
-# We will use a dedicated agent with Google Search instead.
-#
-# def get_nfl_schedule(season: int, week: int) -> list[dict]:
-#     """
-#     Scrapes the official NFL website to get the real-world schedule for a specific week and season.
-#     This is the definitive source of truth for matchups.
-#
-#     Args:
-#         season (int): The year of the season (e.g., 2025).
-#         week (int): The week number.
-#
-#     Returns:
-#         list[dict]: A list of game objects, each containing home and away team names.
-#     """
-#     url = f"https://www.nfl.com/schedules/{season}/REG{week}/"
-#     headers = {
-#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-#     }
-#     try:
-#         response = requests.get(url, headers=headers)
-#         if response.status_code != 200:
-#             return [{"error": f"Failed to fetch schedule, status code: {response.status_code}"}]
-#
-#         soup = BeautifulSoup(response.content, 'html.parser')
-#         
-#         game_cards = soup.find_all('li', class_='w-24 lg:w-32 flex-none')
-#
-#         schedule = []
-#         for card in game_cards:
-#             teams = card.find_all('span', class_='display-7')
-#             if len(teams) == 2:
-#                 away_team_abbr = teams[0].get_text(strip=True)
-#                 home_team_abbr = teams[1].get_text(strip=True)
-#                 schedule.append({"away_team": away_team_abbr, "home_team": home_team_abbr})
-#        
-#         if not schedule:
-#             return [{"error": "No game data found on the page. The HTML structure may have changed."}]
-#            
-#         return schedule
-#     except requests.exceptions.RequestException as e:
-#         return [{"error": f"An error occurred while fetching the schedule: {e}"}]
-

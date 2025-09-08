@@ -19,7 +19,7 @@ player_research_agent = LlmAgent(
     Your task is to perform detailed research on each key player.
 
     **Process:**
-    1.  First, get the user's roster using the `get_my_roster` tool.
+    1.  First, get the user's roster using the `get_roster` tool.
     2.  For each key player on that roster, use your other tools to find:
         a. The latest news and injury updates (via the `scouting_assistant` tool).
         b. Historical stats for previous seasons (via the `get_player_historical_stats` tool).
@@ -29,7 +29,7 @@ player_research_agent = LlmAgent(
     output_key="research_summary", # Passes the output to the next agent.
     tools=[
         scout_tool,
-        scout_agent.get_my_roster,
+        scout_agent.get_roster,
         scout_agent.get_player_historical_stats
     ]
 )

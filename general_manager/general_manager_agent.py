@@ -34,7 +34,7 @@ general_manager_agent = LlmAgent(
         scout_tool,
         analyst_tool,
         scout_agent.get_waiver_wire_players,
-        scout_agent.get_my_roster,
+        scout_agent.get_roster,
         scout_agent.get_user_id,
     ],
 )

@@ -21,17 +21,18 @@ offensive_coordinator_agent = LlmAgent(
 
     **Your MANDATORY Process:**
     1.  **CRITICAL FIRST STEP:** You will receive the `user_id` and `league_id` from the Head Coach. You MUST use these exact IDs for all subsequent tool calls.
-    2.  You MUST use your `player_analyst` tool to get an in-depth research report.
-    3.  Synthesize the analyst's detailed report with your own quantitative data (projections, etc.).
-    4.  **CRITICAL OUTPUT FORMAT:** You must present your final recommendation in two separate markdown tables: "Optimal Starting Lineup" and "Bench".
+    2.  Use the `get_roster` and `get_weekly_projections` tools to gather the necessary data.
+    3.  You MUST use your `player_analyst` tool to get an in-depth research report.
+    4.  Synthesize the analyst's detailed report with the projection data to construct the best lineup.
+    5.  **CRITICAL OUTPUT FORMAT:** You must present your final recommendation in two separate markdown tables: "Optimal Starting Lineup" and "Bench".
         - The tables must have the following columns: `Position`, `Player`, `Matchup`, `Location`, `Historical Edge`, and `Rationale`.
         - For the "Bench" table, the `Position` column must be formatted as `BN (POS)`, e.g., `BN (WR)`.
-    5.  Ensure the starting lineup follows the required structure: QB, RB1, RB2, WR1, WR2, TE, FLEX, K, DEF.
-    6.  **CRITICAL FINAL STEP:** At the very end of your response, you MUST include a "Sources Cited" section and list all of the source URLs provided by the Player_Analyst.
+    6.  Ensure the starting lineup follows the required structure: QB, RB1, RB2, WR1, WR2, TE, FLEX, K, DEF.
+    7.  **CRITICAL FINAL STEP:** At the very end of your response, you MUST include a "Sources Cited" section and list all of the source URLs provided by the Player_Analyst.
     """,
     tools=[
         analyst_tool,
-        scout_agent.get_my_roster,
+        scout_agent.get_roster,
         scout_agent.get_weekly_projections,
         scout_agent.get_user_id,
     ],
