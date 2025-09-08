@@ -16,27 +16,27 @@ player_research_agent = LlmAgent(
     model="gemini-2.5-pro",
     description="Researches each player on a roster using the provided NFL schedule.",
     instruction=f"""
-    You are a fantasy football analyst. Your input will be a JSON string of the official NFL schedule.
-    Your task is to perform detailed research on each key player on a user's roster.
+    You are a fantasy football analyst. Your input is the JSON string of the NFL schedule from the previous step.
+    Your task is to perform detailed research on the key players on a user's roster.
     The current year is {datetime.date.today().year}.
 
     **Process:**
-    1.  Your input is the NFL schedule. You MUST PRESERVE this information for the next step.
-    2.  First, get the user's roster using the `get_roster` tool.
-    3.  For each key player on that roster, you MUST perform the following research:
+    1.  First, get the user's roster using the `get_roster` tool.
+    2.  **CRITICAL:** Research the players on the roster **sequentially, one by one**, to avoid overwhelming the system. For each player, you MUST perform the following research before moving to the next:
         a. The latest news and injury updates (via the `scouting_assistant` tool).
-        b. **CRITICAL:** Historical stats for the current season and the two previous seasons. You MUST call the `get_player_historical_stats` tool separately for each of the three years.
-    4.  **CRITICAL OUTPUT FORMAT:** You MUST format your final output as a single block of text containing three distinct sections, clearly separated by markdown headers:
-    
+        b. Historical stats for the current season and the two previous seasons. You MUST call the `get_player_historical_stats` tool separately for each of the three years.
+    3.  **CRITICAL OUTPUT FORMAT:** After you have finished researching all players, combine the NFL schedule you received as input with your new findings. Format your final output as a single block of text containing three distinct sections, clearly separated by markdown headers:
+
         ### NFL Schedule
-        [Paste the original, unmodified NFL schedule JSON string from your input here]
-        
+        {{nfl_schedule}}
+
         ### User Roster
         [Paste the user roster data you fetched here]
-        
+
         ### Player Research Summary
         [Compile all of your research into a comprehensive summary here]
     """,
+    output_key="research_summary", # Programmatically set the output for the next agent
     tools=[
         scout_tool,
         scout_agent.get_roster,

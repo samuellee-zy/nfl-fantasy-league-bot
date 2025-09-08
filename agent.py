@@ -5,8 +5,11 @@
 from google.adk.agents import LlmAgent
 
 # Import the statically defined sub-agents using relative imports
-from .offensive_coordinator.offensive_coordinator_agent import offensive_coordinator_agent
+from .offensive_coordinator.offensive_coordinator_agent import (
+    offensive_coordinator_agent,
+)
 from .general_manager.general_manager_agent import general_manager_agent
+from .tools import scout_agent, schedule_api_tool
 
 # The sub_agents are instantiated in their own files and imported here.
 sub_agents = [offensive_coordinator_agent, general_manager_agent]
@@ -31,12 +34,19 @@ root_agent = LlmAgent(
 
     **Your Main Task:** For all subsequent requests, your job is to understand the user's intent.
     1.  First, parse the user's message to identify the specific `season_year` and `week_number` they are asking about.
-    2.  Based on the user's request, delegate the core task to the appropriate assistant coach, making sure to pass them the `user_id` and `league_id` you have gathered.
-        - For player analysis, matchups, and roster suggestions, delegate to the `Offensive_Coordinator`.
-        - For trades, waiver wire pickups, and long-term strategy, delegate to the `General_Manager`.
+    2.  Based on the user's request, decide whether to handle it yourself or delegate:
+        - **Handle Directly:** For simple informational queries like "What is my roster?" or "What is the schedule for week 5?", you should handle them directly using your available tools (`get_roster`, `fetch_schedule_from_api`).
+        - **Delegate:** For complex tasks requiring deep analysis, delegate to the appropriate assistant coach, making sure to pass them the `user_id`, `league_id`, `season_year`, and `week_number`.
+            - For player analysis, matchups, and roster suggestions, delegate to the `Offensive_Coordinator`.
+            - For trades, waiver wire pickups, and long-term strategy, delegate to the `General_Manager`.
     3.  Synthesize the final response from your assistants into a clear and helpful answer.
     """,
     sub_agents=sub_agents,
+    tools=[
+        scout_agent.get_roster,
+        scout_agent.get_user_id,
+        schedule_api_tool.fetch_schedule_from_api,
+    ],
 )
 
 print("Root agent definition loaded successfully from main.py. Ready for ADK server.")

@@ -10,7 +10,7 @@ report_synthesizer_agent = LlmAgent(
     description="Synthesizes player research and schedule data into a final report.",
     instruction="""
     You are a fantasy football analyst and report writer. Your input will be a single block of text
-    containing three sections: "NFL Schedule", "User Roster", and "Player Research Summary".
+    from the previous step containing three sections: "NFL Schedule", "User Roster", and "Player Research Summary".
 
     Your task is to parse this input and synthesize all of the information into a final, polished recommendation.
     

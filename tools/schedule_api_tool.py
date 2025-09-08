@@ -1,7 +1,8 @@
 import requests
 import json
+from typing import Optional
 
-def fetch_schedule_from_api(season_year: int = 2025, week: int = None) -> str:
+def fetch_schedule_from_api(season_year: int = 2025, week: Optional[int] = None) -> str:
     """
     Fetches the NFL schedule for a given season year and optional week from the ESPN API.
 
@@ -46,9 +47,18 @@ def fetch_schedule_from_api(season_year: int = 2025, week: int = None) -> str:
                 }
                 games.append(game_info)
         
-        # Return the data as a JSON string, which is standard for agent tools
-        return json.dumps(games)
+        # Convert the game list to a JSON string for the agent
+        schedule_json = json.dumps(games)
+        
+        # --- DEBUGGING: Print the fetched schedule to the console ---
+        print("--- FETCHED NFL SCHEDULE ---")
+        print(schedule_json)
+        print("--------------------------")
+
+        # Return the data as a JSON string
+        return schedule_json
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching NFL schedule: {e}")
         return json.dumps([]) # Return an empty list on error
+
