@@ -4,7 +4,11 @@
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
 from tools import scout_agent
-from general_manager import scouting_assistant_agent, schedule_agent
+# --- START OF CHANGE ---
+# Replaced the deprecated schedule_agent with the new data_gathering_agent
+from general_manager import scouting_assistant_agent
+from general_manager.analyst_steps import data_gathering_agent
+# --- END OF CHANGE ---
 
 def create_agent():
     """Factory function to create the Player Analyst agent."""
@@ -12,20 +16,23 @@ def create_agent():
     scout = scouting_assistant_agent.create_agent()
     scout_tool = AgentTool(agent=scout)
     
-    schedule = schedule_agent.create_agent()
-    schedule_tool = AgentTool(agent=schedule)
+    # --- START OF CHANGE ---
+    # The new data_gathering_agent is used as a tool to fetch the schedule.
+    gatherer = data_gathering_agent.create_agent()
+    gatherer_tool = AgentTool(agent=gatherer, name="data_gathering_agent")
+    # --- END OF CHANGE ---
 
     return LlmAgent(
         name="player_analyst",
         model="gemini-2.5-pro",
         description="Performs deep-dive research on players by analyzing historical performance and delegating news gathering to a scouting assistant tool.",
-        # **CHANGE**: Instructions updated to act on context from the parent agent.
+        # **CHANGE**: Instructions updated to use the new data_gathering_agent.
         instruction="""
         You are an expert fantasy football analyst. Your goal is to provide a detailed, accurate report grounded in verified, real-time information.
 
         **Your MANDATORY Process:**
         1.  You will receive a task from your superior that includes the specific `season_year` and `week_number` to analyze, along with the user's `user_id` and `league_id`.
-        2.  **Get Schedule:** You MUST use the `schedule_agent` tool to get the official NFL schedule for the season and week you were given.
+        2.  **Get Schedule:** You MUST use the `data_gathering_agent` tool to get the official NFL schedule for the season and week you were given.
         3.  **VERIFY SCHEDULE:** After receiving the schedule, you MUST perform a verification step. Use your `scouting_assistant` tool to search for one or two of the games from the list you received (e.g., "Cowboys vs Browns week 1 2025") to confirm the schedule data is accurate. Do not proceed if the schedule is incorrect.
         4.  **Get Roster:** Once the schedule is verified, use the `get_my_roster` tool with the correct user and league IDs.
         5.  **Research Players:** For each key player on the roster, perform research using their verified matchup.
@@ -34,10 +41,11 @@ def create_agent():
         6.  Synthesize all verified information into a comprehensive report for the Offensive Coordinator, including a list of your sources.
         """,
         tools=[
-            schedule_tool,
+            # --- START OF CHANGE ---
+            gatherer_tool,
+            # --- END OF CHANGE ---
             scout_tool,
             scout_agent.get_my_roster,
             scout_agent.get_player_historical_stats,
         ],
     )
-
